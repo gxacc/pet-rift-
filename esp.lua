@@ -126,45 +126,19 @@ local OtherEsp = EspTab:AddSection({
     Name = "Other"
 })
 
-OtherEsp:AddButton({
-    Name = "Refresh (for new players)",
-    Callback = function()
-        if EspToggled then
-            for i, v in pairs(game:FindFirstChildOfClass("Players"):GetChildren()) do
-                if not v.Character:FindFirstChild("esp") and v.Name ~= game:FindFirstChildOfClass("Players").LocalPlayer.Name then
-                        local highlight = Instance.new("Highlight")
-                        highlight.Parent = v.Character
-                        highlight.Name = "esp"
-                        highlight.FillTransparency = EspTransparency
-                        highlight.OutlineTransparency = EspOutlineTransparency
-                        highlight.FillColor = EspColor
-                        highlight.OutlineColor = EspOutlineColor
-                end
+game:GetService("Players").PlayerAdded:Connect(function(player)
+    if EspToggled then
+        if not player.Character:FindFirstChild("esp") and player.Name ~= game:FindFirstChildOfClass("Players").LocalPlayer.Name then
+                local highlight = Instance.new("Highlight")
+                highlight.Parent = player.Character
+                highlight.Name = "esp"
+                highlight.FillTransparency = EspTransparency
+                highlight.OutlineTransparency = EspOutlineTransparency
+                highlight.FillColor = EspColor
+                highlight.OutlineColor = EspOutlineColor
             end
-        end
     end
-})
-
-OtherEsp:AddBind({
-    Name = "Refresh bind",
-    Default = Enum.KeyCode.Plus,
-    Hold = false,
-    Callback = function()
-        if EspToggled then
-            for i, v in pairs(game:FindFirstChildOfClass("Players"):GetChildren()) do
-                if not v.Character:FindFirstChild("esp") and v.Name ~= game:FindFirstChildOfClass("Players").LocalPlayer.Name then
-                        local highlight = Instance.new("Highlight")
-                        highlight.Parent = v.Character
-                        highlight.Name = "esp"
-                        highlight.FillTransparency = EspTransparency
-                        highlight.OutlineTransparency = EspOutlineTransparency
-                        highlight.FillColor = EspColor
-                        highlight.OutlineColor = EspOutlineColor
-                end
-            end
-        end
-    end
-})
+end)
 
 OtherEsp:AddButton({
     Name = "Reset Settings",
@@ -173,5 +147,31 @@ OtherEsp:AddButton({
         EspColorOutlinePicker:Set(Color3.fromRGB(255, 255, 255))
         FillTransSlider:Set(0.5)
         OutTransSlider:Set(0)
+    end
+})
+
+OtherEsp:AddButton({
+    Name = "Refresh ESP",
+    Callback = function()
+        EspToggled = false
+        getgenv().ESP_ESPVisible = false
+        for i, v in pairs(game.Players:GetChildren()) do
+            if v.Character:FindFirstChild("esp") then
+                v.Character:FindFirstChildOfClass("Highlight"):Destroy()
+            end
+        end
+        EspToggled = true
+        getgenv().ESP_ESPVisible = true
+        for i, v in pairs(game.Players:GetChildren()) do
+            if v.Name ~= game.Players.LocalPlayer.Name then
+                local highlight = Instance.new("Highlight")
+                highlight.Parent = v.Character
+                highlight.Name = "esp"
+                highlight.FillTransparency = EspTransparency
+                highlight.OutlineTransparency = EspOutlineTransparency
+                highlight.FillColor = EspColor
+                highlight.OutlineColor = EspOutlineColor
+            end
+        end
     end
 })
